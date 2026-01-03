@@ -192,7 +192,10 @@ def _calculate_drawdown(
 
 
 def _calculate_trade_metrics(trade_log: TradeLog) -> tuple[float, float, float]:
-    """Calculate trade-based metrics.
+    """Calculate trade-based metrics using round-trip matching.
+
+    Matches opening and closing trades by pair_id to calculate
+    accurate win rate, profit factor, and average return.
 
     Args:
         trade_log: Log of all trades
@@ -203,17 +206,31 @@ def _calculate_trade_metrics(trade_log: TradeLog) -> tuple[float, float, float]:
     if trade_log.num_trades == 0:
         return 0.0, 0.0, 0.0
 
-    # Group trades by pair_id to calculate P&L per round-trip
-    # For now, use a simplified approach: count all trades
-    # TODO: Properly match opening and closing trades for P&L
+    # Use round-trip matching from analysis module
+    from ptengine.analysis.trade_analysis import match_round_trips
 
-    trades = trade_log.trades
-    num_trades = len(trades)
+    round_trips = match_round_trips(trade_log, include_open=False)
 
-    # Placeholder values until proper round-trip P&L calculation
-    win_rate = 0.5  # Default
-    profit_factor = 1.0  # Default
-    avg_trade_return = 0.0  # Default
+    if not round_trips:
+        return 0.0, 0.0, 0.0
+
+    # Calculate win rate
+    winners = [rt for rt in round_trips if rt.pnl > 0]
+    losers = [rt for rt in round_trips if rt.pnl < 0]
+
+    win_rate = len(winners) / len(round_trips)
+
+    # Calculate profit factor
+    gross_profit = sum(rt.pnl for rt in winners)
+    gross_loss = abs(sum(rt.pnl for rt in losers))
+
+    if gross_loss > 0:
+        profit_factor = gross_profit / gross_loss
+    else:
+        profit_factor = float("inf") if gross_profit > 0 else 0.0
+
+    # Calculate average return
+    avg_trade_return = sum(rt.return_pct for rt in round_trips) / len(round_trips)
 
     return win_rate, profit_factor, avg_trade_return
 
