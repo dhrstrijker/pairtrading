@@ -13,8 +13,8 @@ import numpy as np
 import pandas as pd
 
 try:
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
     from matplotlib.figure import Figure
 
     HAS_MATPLOTLIB = True
@@ -180,7 +180,7 @@ def create_pair_returns_chart(
     pairs = pair_returns["pair_id"].unique()
     colors = plt.cm.tab10(np.linspace(0, 1, len(pairs)))
 
-    for pair_id, color in zip(pairs, colors):
+    for pair_id, color in zip(pairs, colors, strict=True):
         pair_data = pair_returns[pair_returns["pair_id"] == pair_id]
         dates = pd.to_datetime(pair_data["date"])
         returns = pair_data["cumulative_return"] * 100
@@ -492,7 +492,7 @@ def create_risk_chart(
 
 
 def create_tear_sheet(
-    analyzer: "StrategyAnalyzer",
+    analyzer: StrategyAnalyzer,
     save_path: Path,
     title: str | None = None,
 ) -> Path:
@@ -529,7 +529,6 @@ def create_tear_sheet(
     round_trips = analyzer.round_trips
     pair_returns = analyzer.pair_cumulative_returns()
     risk_profile = analyzer.risk_profile()
-    daily_returns = analyzer.result.daily_returns()
     rolling_df = analyzer.rolling_metrics()
 
     # 1. Equity curve (top, full width)
@@ -558,7 +557,7 @@ def create_tear_sheet(
     if not pair_returns.empty:
         pairs = pair_returns["pair_id"].unique()
         colors = plt.cm.tab10(np.linspace(0, 1, len(pairs)))
-        for pair_id, color in zip(pairs, colors):
+        for pair_id, color in zip(pairs, colors, strict=True):
             pdata = pair_returns[pair_returns["pair_id"] == pair_id]
             ax2.plot(pd.to_datetime(pdata["date"]), pdata["cumulative_return"] * 100,
                     linewidth=1.5, label=pair_id, color=color)
@@ -591,8 +590,12 @@ def create_tear_sheet(
         sharpe = rolling_df["rolling_sharpe"]
         ax4.plot(rolling_df.index, sharpe, linewidth=1.5, color="#2E86AB")
         ax4.axhline(0, color="black", linewidth=0.5, linestyle="--")
-        ax4.fill_between(rolling_df.index, 0, sharpe, where=(sharpe > 0), alpha=0.2, color="#27AE60")
-        ax4.fill_between(rolling_df.index, 0, sharpe, where=(sharpe < 0), alpha=0.2, color="#E74C3C")
+        ax4.fill_between(
+            rolling_df.index, 0, sharpe, where=(sharpe > 0), alpha=0.2, color="#27AE60"
+        )
+        ax4.fill_between(
+            rolling_df.index, 0, sharpe, where=(sharpe < 0), alpha=0.2, color="#E74C3C"
+        )
     ax4.set_ylabel("Sharpe Ratio")
     ax4.set_title("Rolling Sharpe (60d)", fontsize=12)
     ax4.grid(True, alpha=0.3)

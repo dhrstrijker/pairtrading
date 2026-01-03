@@ -141,8 +141,8 @@ def analyze_drawdowns(equity_curve: pd.DataFrame) -> list[DrawdownPeriod]:
                     peak_equity=peak_value,
                     trough_equity=trough_value,
                     drawdown_pct=trough_dd,
-                    duration_days=(idx - start_idx).days if hasattr(idx - start_idx, "days") else 0,
-                    recovery_days=(idx - trough_idx).days if hasattr(idx - trough_idx, "days") else 0,
+                    duration_days=(idx - start_idx).days if hasattr(idx - start_idx, "days") else 0,  # noqa: E501
+                    recovery_days=(idx - trough_idx).days if hasattr(idx - trough_idx, "days") else 0,  # noqa: E501
                 ))
                 in_drawdown = False
 
@@ -157,7 +157,7 @@ def analyze_drawdowns(equity_curve: pd.DataFrame) -> list[DrawdownPeriod]:
             peak_equity=peak_value,
             trough_equity=trough_value,
             drawdown_pct=trough_dd,
-            duration_days=(last_idx - start_idx).days if hasattr(last_idx - start_idx, "days") else 0,
+            duration_days=(last_idx - start_idx).days if hasattr(last_idx - start_idx, "days") else 0,  # noqa: E501
             recovery_days=None,
         ))
 

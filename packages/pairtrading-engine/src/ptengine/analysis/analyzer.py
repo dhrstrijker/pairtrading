@@ -10,14 +10,6 @@ from typing import Any
 
 import pandas as pd
 
-from ptengine.results.report import BacktestResult
-
-from ptengine.analysis.trade_analysis import (
-    RoundTrip,
-    TradeStatistics,
-    match_round_trips,
-    calculate_trade_statistics,
-)
 from ptengine.analysis.pair_analysis import (
     PairMetrics,
     analyze_pairs,
@@ -29,6 +21,13 @@ from ptengine.analysis.risk_analysis import (
     calculate_risk_profile,
     rolling_metrics,
 )
+from ptengine.analysis.trade_analysis import (
+    RoundTrip,
+    TradeStatistics,
+    calculate_trade_statistics,
+    match_round_trips,
+)
+from ptengine.results.report import BacktestResult
 
 
 @dataclass
@@ -87,7 +86,6 @@ class StrategyAnalyzer:
         """
         if self._round_trips is None:
             # Get final prices for marking open positions
-            equity_curve = self.result.equity_curve()
             end_date = self.result.end_date
 
             # Try to get final prices from portfolio
@@ -251,7 +249,7 @@ class StrategyAnalyzer:
             f"  Total Round-Trips: {trade_stats.total_round_trips:>10}",
             f"  Win Rate:          {trade_stats.win_rate:>10.1%}",
             f"  Profit Factor:     {trade_stats.profit_factor:>10.2f}",
-            f"  Avg P&L:           ${trade_stats.total_pnl / max(trade_stats.total_round_trips, 1):>9.2f}",
+            f"  Avg P&L:           ${trade_stats.total_pnl / max(trade_stats.total_round_trips, 1):>9.2f}",  # noqa: E501
             f"  Avg Holding:       {trade_stats.avg_holding_days:>10.1f} days",
             f"  Best Trade:        {trade_stats.best_trade_pct:>10.2%}",
             f"  Worst Trade:       {trade_stats.worst_trade_pct:>10.2%}",
@@ -286,9 +284,9 @@ class StrategyAnalyzer:
         from ptengine.analysis.visualizations import (
             create_equity_chart,
             create_pair_returns_chart,
-            create_trade_distribution_chart,
-            create_rolling_metrics_chart,
             create_risk_chart,
+            create_rolling_metrics_chart,
+            create_trade_distribution_chart,
         )
 
         output_dir = Path(output_dir)
