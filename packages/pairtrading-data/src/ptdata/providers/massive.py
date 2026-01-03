@@ -7,9 +7,11 @@ API Documentation: https://docs.polygon.io/ (legacy)
 """
 
 import os
+import re
 import time
 from datetime import date
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 import pandas as pd
@@ -51,6 +53,10 @@ class MassiveAPIProvider:
     # Polygon.io API base URL (Massive API should have similar structure)
     BASE_URL = "https://api.polygon.io"
 
+    # Valid ticker symbol pattern: letters, digits, dots, hyphens (e.g., BRK.A, BRK-B)
+    # Must start with letter or digit, 1-10 characters total
+    _VALID_SYMBOL_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9.\-]{0,9}$")
+
     def __init__(
         self,
         api_key: str | None = None,
@@ -86,6 +92,24 @@ class MassiveAPIProvider:
     def name(self) -> str:
         """Provider identifier."""
         return "massive"
+
+    def _validate_symbol(self, symbol: str) -> None:
+        """Validate that a symbol is safe to use in API URLs.
+
+        This prevents URL injection attacks by ensuring symbols only contain
+        valid ticker characters (letters, digits, dots, hyphens).
+
+        Args:
+            symbol: The ticker symbol to validate
+
+        Raises:
+            ValueError: If symbol contains invalid characters
+        """
+        if not self._VALID_SYMBOL_PATTERN.match(symbol):
+            raise ValueError(
+                f"Invalid symbol '{symbol}': must be 1-10 characters, "
+                "containing only uppercase letters, digits, dots, or hyphens"
+            )
 
     def get_prices(
         self,
@@ -142,9 +166,17 @@ class MassiveAPIProvider:
 
         Uses the Polygon.io aggregates endpoint:
         /v2/aggs/ticker/{ticker}/range/1/day/{from}/{to}
+
+        Raises:
+            ValueError: If symbol contains invalid characters
         """
+        # Validate symbol to prevent URL injection attacks
+        self._validate_symbol(symbol)
+
+        # URL-encode symbol for safety (dots and hyphens are allowed but encode anyway)
+        safe_symbol = quote(symbol, safe="")
         url = (
-            f"{self.BASE_URL}/v2/aggs/ticker/{symbol}/range/1/day/"
+            f"{self.BASE_URL}/v2/aggs/ticker/{safe_symbol}/range/1/day/"
             f"{start_date.isoformat()}/{end_date.isoformat()}"
         )
 
