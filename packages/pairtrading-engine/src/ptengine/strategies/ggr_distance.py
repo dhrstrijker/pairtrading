@@ -15,16 +15,15 @@ Reference:
     The Review of Financial Studies, 19(3), 797-827.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
-from typing import Any
+
 import numpy as np
 import pandas as pd
-
 from ptdata.validation import PointInTimeDataFrame
 
+from ptengine.core.types import PairSignal, Signal, SignalType, Trade
 from ptengine.strategy.base import BaseStrategy
-from ptengine.core.types import Signal, PairSignal, SignalType, Trade
 
 
 @dataclass
@@ -265,7 +264,7 @@ class GGRDistanceStrategy(BaseStrategy):
 
     def _check_exits(self, data: pd.DataFrame, current_date: date) -> Signal:
         """Check if any active position should be closed."""
-        for pair_id, state in list(self._active_positions.items()):
+        for _pair_id, state in list(self._active_positions.items()):
             # Time-based exit
             if state.days_held >= self.max_holding_days:
                 return self._create_close_signal(state)

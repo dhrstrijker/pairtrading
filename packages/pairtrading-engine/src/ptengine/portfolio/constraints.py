@@ -7,13 +7,13 @@ They can enforce risk limits, neutrality requirements, and position limits.
 from dataclasses import dataclass
 from typing import Protocol
 
-from ptengine.core.types import PairSignal, WeightSignal, Signal
 from ptengine.core.constants import (
-    DEFAULT_MAX_POSITION_PCT,
     DEFAULT_MAX_GROSS_EXPOSURE,
+    DEFAULT_MAX_POSITION_PCT,
     DEFAULT_NEUTRALITY_TOLERANCE,
 )
 from ptengine.core.exceptions import ConstraintViolationError
+from ptengine.core.types import PairSignal, Signal, WeightSignal
 from ptengine.portfolio.portfolio import Portfolio
 
 
@@ -190,10 +190,7 @@ class PositionLimitConstraint:
                     return False
 
             # Check gross exposure
-            if signal.gross_exposure > self.max_gross_exposure:
-                return False
-
-            return True
+            return signal.gross_exposure <= self.max_gross_exposure
 
         return True
 

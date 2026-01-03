@@ -37,7 +37,6 @@ def generate_synthetic_data(
     dates = pd.date_range(start=start_date, end=end_date, freq="B")
 
     data = []
-    n_symbols = len(symbols)
 
     # Initialize prices
     prices = {s: 100.0 + np.random.uniform(-20, 20) for s in symbols}
@@ -127,7 +126,7 @@ def main():
         commission_model=PerShareCommission(rate=0.005, minimum=1.0),
     )
 
-    print(f"Backtest Config:")
+    print("Backtest Config:")
     print(f"  Initial Capital: ${config.initial_capital:,.2f}")
     print(f"  Capital per Pair: ${config.capital_per_pair:,.2f}")
     print(f"  Period: {config.start_date} to {config.end_date}")

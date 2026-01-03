@@ -20,60 +20,59 @@ Usage:
     print(result.summary())
 """
 
-from ptengine.core.types import (
-    Side,
-    SignalType,
-    PairSignal,
-    WeightSignal,
-    Position,
-    PairPosition,
-    Trade,
-    Signal,
-)
-from ptengine.core.exceptions import (
-    PTEngineError,
-    InvalidSignalError,
-    InsufficientCapitalError,
-    ConstraintViolationError,
-    StrategyError,
-    BacktestError,
-    ExecutionError,
-)
-from ptengine.core.constants import (
-    DEFAULT_INITIAL_CAPITAL,
-    DEFAULT_CAPITAL_PER_PAIR,
-    DEFAULT_PRICE_COLUMN,
-    TRADING_DAYS_PER_YEAR,
-)
-
 # Backtest components
 from ptengine.backtest.config import BacktestConfig
 from ptengine.backtest.runner import BacktestRunner
 
-# Portfolio
-from ptengine.portfolio.portfolio import Portfolio
-
-# Strategy
-from ptengine.strategy.base import Strategy, BaseStrategy
-
-# Results
-from ptengine.results.report import BacktestResult
-from ptengine.results.metrics import PerformanceMetrics
-from ptengine.results.trades import TradeLog
+# Commission
+from ptengine.commission.models import (
+    IBKRTieredCommission,
+    PercentageCommission,
+    PerShareCommission,
+    ZeroCommission,
+)
+from ptengine.core.constants import (
+    DEFAULT_CAPITAL_PER_PAIR,
+    DEFAULT_INITIAL_CAPITAL,
+    DEFAULT_PRICE_COLUMN,
+    TRADING_DAYS_PER_YEAR,
+)
+from ptengine.core.exceptions import (
+    BacktestError,
+    ConstraintViolationError,
+    ExecutionError,
+    InsufficientCapitalError,
+    InvalidSignalError,
+    PTEngineError,
+    StrategyError,
+)
+from ptengine.core.types import (
+    PairPosition,
+    PairSignal,
+    Position,
+    Side,
+    Signal,
+    SignalType,
+    Trade,
+    WeightSignal,
+)
 
 # Execution
 from ptengine.execution.simple import ClosePriceExecution
 
-# Commission
-from ptengine.commission.models import (
-    ZeroCommission,
-    PerShareCommission,
-    PercentageCommission,
-    IBKRTieredCommission,
-)
+# Portfolio
+from ptengine.portfolio.portfolio import Portfolio
+from ptengine.results.metrics import PerformanceMetrics
+
+# Results
+from ptengine.results.report import BacktestResult
+from ptengine.results.trades import TradeLog
 
 # Built-in strategies
 from ptengine.strategies.ggr_distance import GGRDistanceStrategy
+
+# Strategy
+from ptengine.strategy.base import BaseStrategy, Strategy
 
 # Analysis (optional - requires matplotlib)
 try:

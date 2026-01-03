@@ -1,17 +1,14 @@
 """Unit tests for data providers."""
 
 from datetime import date
-from decimal import Decimal
 from unittest.mock import Mock, patch
-import json
 
 import pandas as pd
 import pytest
 
-from ptdata.providers.base import DataProvider
+from ptdata.core.exceptions import PTDataError
 from ptdata.providers.csv_file import CSVFileProvider
 from ptdata.providers.massive import MassiveAPIProvider
-from ptdata.core.exceptions import PTDataError
 
 
 class TestDataProviderProtocol:
@@ -195,7 +192,7 @@ class TestMassiveAPIProvider:
 
         with patch.dict("os.environ", {"MASSIVE_API_KEY": "test_key"}):
             provider = MassiveAPIProvider()
-            result = provider.get_prices(
+            provider.get_prices(
                 symbols=["AAPL"],
                 start_date=date(2020, 1, 1),
                 end_date=date(2020, 1, 10),

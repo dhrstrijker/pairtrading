@@ -1,10 +1,10 @@
 """Signal types module."""
 
 from ptengine.core.types import (
-    Signal,
     PairSignal,
-    WeightSignal,
+    Signal,
     SignalType,
+    WeightSignal,
 )
 
 __all__ = [

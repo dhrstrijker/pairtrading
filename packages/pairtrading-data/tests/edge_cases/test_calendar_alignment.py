@@ -11,11 +11,8 @@ to avoid comparing data from different days.
 These tests verify proper calendar alignment.
 """
 
-from datetime import date, timedelta
 
 import pandas as pd
-import numpy as np
-import pytest
 
 from ptdata.validation.gaps import align_dates, find_gaps
 
@@ -69,7 +66,7 @@ class TestCalendarAlignment:
         uk_dates = set(pd.to_datetime(uk_df["date"]).dt.date)
         aligned_uk_dates = set(pd.to_datetime(aligned_uk["date"]).dt.date)
 
-        assert aligned_uk_dates == uk_dates, "Right join should preserve all right dates"
+        assert aligned_uk_dates == uk_dates, "Right join should preserve right dates"
 
     def test_aligned_data_sorted(self, different_calendar_data):
         """Aligned data should be sorted by date."""

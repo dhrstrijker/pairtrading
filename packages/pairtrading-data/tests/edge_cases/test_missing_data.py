@@ -10,19 +10,17 @@ These tests verify that missing data is handled correctly
 and that the system fails gracefully when gaps are too large.
 """
 
-from datetime import date, timedelta
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
 
+from ptdata.core.exceptions import DataQualityError
 from ptdata.validation.gaps import (
     MissingDataStrategy,
     find_gaps,
     handle_missing_data,
-    align_dates,
 )
-from ptdata.core.exceptions import DataQualityError
 
 
 class TestMissingData:
@@ -166,7 +164,8 @@ class TestFindGaps:
         # Create gap only for AAPL
         aapl_dates = df[df["symbol"] == "AAPL"]["date"]
         gap_start_idx = len(aapl_dates) // 2
-        gap_indices = df[(df["symbol"] == "AAPL")].index[gap_start_idx:gap_start_idx + 10]
+        end_idx = gap_start_idx + 10
+        gap_indices = df[(df["symbol"] == "AAPL")].index[gap_start_idx:end_idx]
         df = df.drop(gap_indices)
 
         gaps = find_gaps(df, symbol_column="symbol")
@@ -251,10 +250,13 @@ class TestGapHandlingEdgeCases:
 
     def test_sparse_nan_values(self):
         """Sparse NaN values should each be filled independently."""
+        close_vals = [
+            100.0, np.nan, 102.0, 103.0, np.nan, 105.0, 106.0, np.nan, 108.0, 109.0
+        ]
         df = pd.DataFrame({
             "symbol": ["TEST"] * 10,
             "date": pd.date_range("2020-01-01", periods=10),
-            "close": [100.0, np.nan, 102.0, 103.0, np.nan, 105.0, 106.0, np.nan, 108.0, 109.0],
+            "close": close_vals,
             "volume": [1000] * 10,
         })
 

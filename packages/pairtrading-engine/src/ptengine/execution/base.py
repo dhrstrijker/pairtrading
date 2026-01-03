@@ -3,10 +3,10 @@
 Defines the interface that all execution models must implement.
 """
 
-from typing import Protocol
 from datetime import date
+from typing import Protocol
 
-from ptengine.core.types import PairSignal, WeightSignal, Trade
+from ptengine.core.types import PairSignal, Trade, WeightSignal
 from ptengine.portfolio.portfolio import Portfolio
 
 

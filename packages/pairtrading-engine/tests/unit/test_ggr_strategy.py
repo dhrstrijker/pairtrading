@@ -1,14 +1,14 @@
 """Tests for GGR Distance Strategy."""
 
 from datetime import date
-import pytest
-import pandas as pd
-import numpy as np
 
+import numpy as np
+import pandas as pd
+import pytest
 from ptdata.validation import PointInTimeDataFrame
 
-from ptengine.strategies.ggr_distance import GGRDistanceStrategy, PairCandidate
 from ptengine.core.types import SignalType
+from ptengine.strategies.ggr_distance import GGRDistanceStrategy, PairCandidate
 
 
 @pytest.fixture

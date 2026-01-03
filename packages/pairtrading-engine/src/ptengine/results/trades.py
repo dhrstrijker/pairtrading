@@ -1,12 +1,12 @@
 """Trade logging and analysis."""
 
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Iterator
 
 import pandas as pd
 
-from ptengine.core.types import Trade, Side
+from ptengine.core.types import Side, Trade
 
 
 @dataclass

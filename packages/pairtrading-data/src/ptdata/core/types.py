@@ -6,7 +6,7 @@ Important: Decimal vs Float
 - The conversion boundary is documented - engine/strategy projects handle the cast
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 from enum import Enum, auto
@@ -81,9 +81,10 @@ class PriceBar:
 
         Converts floats to Decimal for internal storage.
         """
+        d = data["date"] if isinstance(data["date"], date) else data["date"].date()
         return cls(
             symbol=data["symbol"],
-            date=data["date"] if isinstance(data["date"], date) else data["date"].date(),
+            date=d,
             open=Decimal(str(data["open"])),
             high=Decimal(str(data["high"])),
             low=Decimal(str(data["low"])),
@@ -128,9 +129,14 @@ class CorporateAction:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "CorporateAction":
         """Create CorporateAction from a dictionary."""
+        d = (
+            date.fromisoformat(data["date"])
+            if isinstance(data["date"], str)
+            else data["date"]
+        )
         return cls(
             symbol=data["symbol"],
-            date=date.fromisoformat(data["date"]) if isinstance(data["date"], str) else data["date"],
+            date=d,
             action_type=CorporateActionType[data["action_type"]],
             value=Decimal(data["value"]),
             description=data.get("description", ""),

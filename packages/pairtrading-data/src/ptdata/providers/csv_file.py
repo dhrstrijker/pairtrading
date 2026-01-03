@@ -8,7 +8,6 @@ Load market data from local CSV files. Useful for:
 
 from datetime import date
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 
@@ -195,7 +194,9 @@ class CSVFileProvider:
 
         # Parse date column
         if self.date_format:
-            df[self.date_column] = pd.to_datetime(df[self.date_column], format=self.date_format)
+            df[self.date_column] = pd.to_datetime(
+                df[self.date_column], format=self.date_format
+            )
         else:
             df[self.date_column] = pd.to_datetime(df[self.date_column])
 
@@ -220,7 +221,8 @@ class CSVFileProvider:
             df["adj_close"] = df["close"]
 
         # Select and rename columns
-        df = df[["symbol", "date", "open", "high", "low", "close", "adj_close", "volume"]].copy()
+        cols = ["symbol", "date", "open", "high", "low", "close", "adj_close", "volume"]
+        df = df[cols].copy()
 
         # Ensure correct types
         for col in ["open", "high", "low", "close", "adj_close"]:

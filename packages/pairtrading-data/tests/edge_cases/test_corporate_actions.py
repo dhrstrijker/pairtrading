@@ -9,11 +9,11 @@ affect price series and must be handled correctly to avoid:
 These tests verify proper handling of various corporate actions.
 """
 
-from datetime import date, timedelta
+from datetime import date
 from decimal import Decimal
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
 
 from ptdata.core.types import CorporateAction, CorporateActionType
@@ -119,8 +119,6 @@ class TestDividends:
     def test_total_return_includes_dividends(self):
         """Total return calculation should include dividends."""
         # Using adjusted prices automatically includes dividends
-        dates = pd.bdate_range("2020-01-01", periods=252)
-
         # Stock with 2% annual dividend yield, 10% price appreciation
         # Total return should be ~12%
         np.random.seed(42)
@@ -150,7 +148,7 @@ class TestMergers:
     def test_acquiring_company_continues(self, sample_prices):
         """Acquiring company should have continuous data."""
         # The surviving company continues trading
-        assert len(sample_prices) >= 100, "Acquiring company should have continuous data"
+        assert len(sample_prices) >= 100, "Acquiring company should be continuous"
 
 
 class TestAdjustedPriceQuality:
@@ -208,7 +206,7 @@ class TestCorporateActionTypes:
             value=Decimal("4.0"),
         )
 
-        with pytest.raises(Exception):  # frozen dataclass
+        with pytest.raises(AttributeError):  # frozen dataclass
             split.symbol = "MSFT"
 
     def test_dividend_action(self):

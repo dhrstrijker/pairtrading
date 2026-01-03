@@ -1,15 +1,15 @@
 """Shared test fixtures for pairtrading-engine tests."""
 
-from datetime import date, timedelta
-import pytest
-import pandas as pd
-import numpy as np
+from datetime import date
 
+import numpy as np
+import pandas as pd
+import pytest
 from ptdata.validation import PointInTimeDataFrame
 
-from ptengine.core.types import Position, PairPosition, Trade, Side, PairSignal, SignalType
-from ptengine.portfolio.portfolio import Portfolio
 from ptengine.backtest.config import BacktestConfig
+from ptengine.core.types import PairSignal, Side, SignalType, Trade
+from ptengine.portfolio.portfolio import Portfolio
 
 
 @pytest.fixture

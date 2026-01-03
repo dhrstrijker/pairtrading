@@ -1,15 +1,13 @@
 """Unit tests for stock universes."""
 
-from datetime import date
-from pathlib import Path
 import tempfile
+from datetime import date
 
 import pytest
 
 from ptdata.universes.custom import CustomUniverse
-from ptdata.universes.sectors import SectorUniverse, SHIPPING_STOCKS, MINING_STOCKS
+from ptdata.universes.sectors import SHIPPING_STOCKS, SectorUniverse
 from ptdata.universes.sp500 import SP500Universe
-from ptdata.core.exceptions import PTDataError
 
 
 class TestCustomUniverse:

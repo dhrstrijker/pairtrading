@@ -7,16 +7,14 @@ These checks help identify data issues that could affect analysis.
 from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from ptdata.core.constants import (
-    DEFAULT_EXTREME_MOVE_THRESHOLD,
-    COLUMN_OPEN,
+    COLUMN_ADJ_CLOSE,
+    COLUMN_CLOSE,
     COLUMN_HIGH,
     COLUMN_LOW,
-    COLUMN_CLOSE,
-    COLUMN_ADJ_CLOSE,
-    COLUMN_VOLUME,
+    COLUMN_OPEN,
+    DEFAULT_EXTREME_MOVE_THRESHOLD,
 )
 from ptdata.core.exceptions import DataQualityError
 
@@ -100,16 +98,21 @@ def check_price_sanity(
 
     # Check Close between High and Low
     if all(c in df.columns for c in [COLUMN_HIGH, COLUMN_LOW, COLUMN_CLOSE]):
-        invalid_mask = (df[COLUMN_CLOSE] > df[COLUMN_HIGH]) | (df[COLUMN_CLOSE] < df[COLUMN_LOW])
+        close_high = df[COLUMN_CLOSE] > df[COLUMN_HIGH]
+        close_low = df[COLUMN_CLOSE] < df[COLUMN_LOW]
+        invalid_mask = close_high | close_low
         if invalid_mask.any():
             for idx in df[invalid_mask].index:
                 row = df.loc[idx]
+                close_val = row[COLUMN_CLOSE]
+                high_val = row[COLUMN_HIGH]
+                low_val = row[COLUMN_LOW]
                 issue = {
                     "symbol": row.get("symbol", "UNKNOWN"),
                     "date": row.get("date", "UNKNOWN"),
                     "check": "close_outside_range",
-                    "value": f"close={row[COLUMN_CLOSE]}, high={row[COLUMN_HIGH]}, low={row[COLUMN_LOW]}",
-                    "message": f"Close ({row[COLUMN_CLOSE]}) outside High-Low range",
+                    "value": f"close={close_val}, high={high_val}, low={low_val}",
+                    "message": f"Close ({close_val}) outside High-Low range",
                 }
                 issues.append(issue)
 
@@ -134,12 +137,13 @@ def check_price_sanity(
             for idx in extreme_idx:
                 row = df.loc[idx]
                 ret = returns.loc[idx]
+                thresh_pct = f"{extreme_move_threshold:.0%}"
                 issue = {
                     "symbol": symbol,
                     "date": row.get("date", "UNKNOWN"),
                     "check": "extreme_move",
                     "value": f"{ret:.2%}",
-                    "message": f"Extreme single-day move: {ret:.2%} (threshold: {extreme_move_threshold:.0%})",
+                    "message": f"Extreme move: {ret:.2%} (threshold: {thresh_pct})",
                 }
                 issues.append(issue)
 

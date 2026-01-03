@@ -1,25 +1,22 @@
 """Unit tests for data validation."""
 
 from datetime import date
-from decimal import Decimal
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
 
+from ptdata.core.exceptions import DataQualityError, LookAheadBiasError
+from ptdata.validation.gaps import (
+    MissingDataStrategy,
+    align_dates,
+    find_gaps,
+    handle_missing_data,
+)
 from ptdata.validation.lookahead import PointInTimeDataFrame
 from ptdata.validation.quality import (
     check_price_sanity,
-    check_adjusted_prices,
-    validate_dataframe,
 )
-from ptdata.validation.gaps import (
-    MissingDataStrategy,
-    find_gaps,
-    handle_missing_data,
-    align_dates,
-)
-from ptdata.core.exceptions import LookAheadBiasError, DataQualityError
 
 
 class TestPointInTimeDataFrame:
@@ -178,7 +175,7 @@ class TestPriceSanity:
         """Valid data should pass all checks."""
         issues = check_price_sanity(sample_prices, raise_on_error=False)
 
-        # May have some extreme moves in random data, but shouldn't have structural issues
+        # May have some extreme moves in random data, but not structural issues
         structural_issues = [i for i in issues if i["check"] != "extreme_move"]
         assert len(structural_issues) == 0
 
@@ -273,10 +270,13 @@ class TestGaps:
 
     def test_max_consecutive_exceeded(self):
         """Should raise when consecutive missing exceeds threshold."""
+        close_vals = [
+            100.0, np.nan, np.nan, np.nan, np.nan, np.nan, 106.0, 107.0, 108.0, 109.0
+        ]
         df = pd.DataFrame({
             "symbol": ["AAPL"] * 10,
             "date": pd.date_range("2020-01-01", periods=10),
-            "close": [100.0, np.nan, np.nan, np.nan, np.nan, np.nan, 106.0, 107.0, 108.0, 109.0],
+            "close": close_vals,
         })
 
         with pytest.raises(DataQualityError) as exc_info:

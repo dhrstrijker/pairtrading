@@ -8,7 +8,7 @@ API Documentation: https://docs.polygon.io/ (legacy)
 
 import os
 import time
-from datetime import date, timedelta
+from datetime import date
 from typing import Any
 
 import httpx
@@ -205,9 +205,12 @@ class MassiveAPIProvider:
                     delay = self.retry_delay * (2**attempt)
                     time.sleep(delay)
 
-        raise PTDataError(f"API request failed after {self.retry_count} retries: {last_error}")
+        msg = f"API request failed after {self.retry_count} retries: {last_error}"
+        raise PTDataError(msg)
 
-    def _parse_response(self, symbol: str, results: list[dict[str, Any]]) -> pd.DataFrame:
+    def _parse_response(
+        self, symbol: str, results: list[dict[str, Any]]
+    ) -> pd.DataFrame:
         """Parse API response into DataFrame.
 
         Args:

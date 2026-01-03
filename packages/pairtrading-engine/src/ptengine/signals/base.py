@@ -3,7 +3,7 @@
 Provides helpers for working with the Signal union type.
 """
 
-from ptengine.core.types import Signal, PairSignal, WeightSignal
+from ptengine.core.types import PairSignal, Signal, WeightSignal
 
 
 def is_pair_signal(signal: Signal) -> bool:
@@ -54,8 +54,5 @@ def validate_signal(signal: Signal) -> bool:
         # Already validated in __post_init__
         return True
 
-    if isinstance(signal, WeightSignal):
-        # Already validated in __post_init__
-        return True
-
-    return False
+    # WeightSignal is also validated in __post_init__
+    return isinstance(signal, WeightSignal)

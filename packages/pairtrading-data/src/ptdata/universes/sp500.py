@@ -8,9 +8,6 @@ Future enhancement: Track historical additions/removals.
 """
 
 from datetime import date
-from typing import Any
-
-import httpx
 
 from ptdata.core.exceptions import PTDataError
 
@@ -110,8 +107,9 @@ class SP500Universe:
         """
         try:
             import pandas as pd
-        except ImportError:
-            raise PTDataError("pandas is required to fetch S&P 500 list from Wikipedia")
+        except ImportError as e:
+            msg = "pandas is required to fetch S&P 500 list from Wikipedia"
+            raise PTDataError(msg) from e
 
         url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
 
@@ -146,7 +144,7 @@ class SP500Universe:
             return sorted(cleaned)
 
         except Exception as e:
-            raise PTDataError(f"Failed to fetch S&P 500 list: {e}")
+            raise PTDataError(f"Failed to fetch S&P 500 list: {e}") from e
 
     def __len__(self) -> int:
         """Number of symbols in the universe."""

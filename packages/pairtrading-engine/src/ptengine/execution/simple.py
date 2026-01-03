@@ -5,11 +5,11 @@ V1 implementation: All orders fill at the closing price with no slippage.
 
 from datetime import date
 
-from ptengine.core.types import PairSignal, WeightSignal, Trade, Side, SignalType
-from ptengine.core.exceptions import ExecutionError
-from ptengine.portfolio.portfolio import Portfolio
 from ptengine.commission.base import CommissionModel
 from ptengine.commission.models import ZeroCommission
+from ptengine.core.exceptions import ExecutionError
+from ptengine.core.types import PairSignal, Side, SignalType, Trade, WeightSignal
+from ptengine.portfolio.portfolio import Portfolio
 
 
 class ClosePriceExecution:

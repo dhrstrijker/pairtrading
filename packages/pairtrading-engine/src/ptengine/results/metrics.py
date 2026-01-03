@@ -9,15 +9,13 @@ Provides standard performance metrics for backtest evaluation:
 
 from dataclasses import dataclass
 from datetime import date
-import math
 
 import numpy as np
-import pandas as pd
 
 from ptengine.core.constants import (
-    TRADING_DAYS_PER_YEAR,
     DEFAULT_RISK_FREE_RATE,
     MIN_TRADING_DAYS_FOR_METRICS,
+    TRADING_DAYS_PER_YEAR,
 )
 from ptengine.results.trades import TradeLog
 
@@ -171,7 +169,7 @@ def _calculate_drawdown(
     max_dd_duration = 0
     current_dd_start = None
 
-    for i, (eq, run_max) in enumerate(zip(equity_values, running_max)):
+    for i, (eq, run_max) in enumerate(zip(equity_values, running_max, strict=True)):
         if eq < run_max:
             # In drawdown
             if current_dd_start is None:

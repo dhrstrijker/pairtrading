@@ -1,12 +1,12 @@
 """Backtest configuration."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 from typing import TYPE_CHECKING
 
 from ptengine.core.constants import (
-    DEFAULT_INITIAL_CAPITAL,
     DEFAULT_CAPITAL_PER_PAIR,
+    DEFAULT_INITIAL_CAPITAL,
     DEFAULT_PRICE_COLUMN,
 )
 

@@ -11,11 +11,10 @@ prevents access to future data.
 from datetime import date, timedelta
 
 import pandas as pd
-import numpy as np
 import pytest
 
-from ptdata.validation.lookahead import PointInTimeDataFrame
 from ptdata.core.exceptions import LookAheadBiasError
+from ptdata.validation.lookahead import PointInTimeDataFrame
 
 
 class TestLookAheadBias:

@@ -1,10 +1,11 @@
 """Tests for portfolio management."""
 
 from datetime import date
+
 import pytest
 
-from ptengine.core.types import Trade, Side
 from ptengine.core.exceptions import InsufficientCapitalError
+from ptengine.core.types import Side, Trade
 from ptengine.portfolio.portfolio import Portfolio
 
 

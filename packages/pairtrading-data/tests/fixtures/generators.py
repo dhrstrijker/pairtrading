@@ -9,8 +9,7 @@ that the system handles various scenarios correctly, including:
 - Different trading calendars
 """
 
-from datetime import date, timedelta
-from decimal import Decimal
+from datetime import date
 
 import numpy as np
 import pandas as pd
@@ -199,7 +198,8 @@ def generate_delisting(
     if decline_start < delist_day:
         decline_period = delist_day - decline_start
         decline_per_day = np.log(1 - final_price_drop) / decline_period
-        returns[decline_start:] = decline_per_day + np.random.normal(0, daily_vol * 2, decline_period)
+        noise = np.random.normal(0, daily_vol * 2, decline_period)
+        returns[decline_start:] = decline_per_day + noise
 
     prices = 100 * np.exp(np.cumsum(returns))
 
@@ -310,7 +310,8 @@ def generate_cointegrated_pair(
 
     for t in range(1, n_days):
         dW = np.random.normal(0, np.sqrt(dt))
-        spread[t] = spread[t-1] + theta * (mean_spread - spread[t-1]) * dt + spread_volatility * dW
+        drift = theta * (mean_spread - spread[t-1]) * dt
+        spread[t] = spread[t-1] + drift + spread_volatility * dW
 
     # Generate common factor (market movement)
     market_returns = np.random.normal(0.0003, 0.015, n_days)

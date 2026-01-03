@@ -1,12 +1,9 @@
 """Unit tests for CSV cache system."""
 
 from datetime import date
-from pathlib import Path
-from unittest.mock import Mock, patch
-import json
+from unittest.mock import Mock
 
 import pandas as pd
-import pytest
 
 from ptdata.cache.csv_cache import CSVCache
 from ptdata.cache.metadata import CacheMetadata
@@ -44,8 +41,14 @@ class TestCacheMetadata:
         metadata.set("AAPL", date(2020, 1, 1), date(2020, 12, 31), row_count=252)
 
         # Fully covered (use max_age_days=0 to ignore expiry)
-        assert metadata.is_valid("AAPL", date(2020, 3, 1), date(2020, 6, 30), max_age_days=0)
-        assert metadata.is_valid("AAPL", date(2020, 1, 1), date(2020, 12, 31), max_age_days=0)
+        is_valid1 = metadata.is_valid(
+            "AAPL", date(2020, 3, 1), date(2020, 6, 30), max_age_days=0
+        )
+        is_valid2 = metadata.is_valid(
+            "AAPL", date(2020, 1, 1), date(2020, 12, 31), max_age_days=0
+        )
+        assert is_valid1
+        assert is_valid2
 
     def test_is_valid_partial_coverage(self, temp_cache_dir):
         """Should return False when cache doesn't fully cover range."""
@@ -53,9 +56,15 @@ class TestCacheMetadata:
         metadata.set("AAPL", date(2020, 1, 1), date(2020, 6, 30), row_count=126)
 
         # Not covered - extends beyond
-        assert not metadata.is_valid("AAPL", date(2020, 1, 1), date(2020, 12, 31), max_age_days=0)
+        not_covered1 = metadata.is_valid(
+            "AAPL", date(2020, 1, 1), date(2020, 12, 31), max_age_days=0
+        )
         # Not covered - starts before
-        assert not metadata.is_valid("AAPL", date(2019, 6, 1), date(2020, 3, 1), max_age_days=0)
+        not_covered2 = metadata.is_valid(
+            "AAPL", date(2019, 6, 1), date(2020, 3, 1), max_age_days=0
+        )
+        assert not not_covered1
+        assert not not_covered2
 
     def test_remove_symbol(self, temp_cache_dir):
         """Should remove metadata for a symbol."""

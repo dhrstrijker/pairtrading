@@ -2,10 +2,10 @@
 
 from ptengine.commission.base import CommissionModel
 from ptengine.commission.models import (
-    ZeroCommission,
-    PerShareCommission,
-    PercentageCommission,
     IBKRTieredCommission,
+    PercentageCommission,
+    PerShareCommission,
+    ZeroCommission,
 )
 
 __all__ = [

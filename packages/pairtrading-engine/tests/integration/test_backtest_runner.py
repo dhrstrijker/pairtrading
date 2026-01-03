@@ -1,14 +1,14 @@
 """Integration tests for BacktestRunner."""
 
 from datetime import date
-import pytest
 
+import pytest
 from ptdata.validation import PointInTimeDataFrame
 
 from ptengine.backtest.config import BacktestConfig
 from ptengine.backtest.runner import BacktestRunner
+from ptengine.core.types import PairSignal, Signal, SignalType, WeightSignal
 from ptengine.strategy.base import BaseStrategy
-from ptengine.core.types import Signal, PairSignal, WeightSignal, SignalType
 
 
 class DoNothingStrategy(BaseStrategy):
@@ -47,14 +47,13 @@ class SimplePairStrategy(BaseStrategy):
             )
 
         # Close after 30 days
-        if self._opened and not self._closed:
-            if len(pit_data.get_data()) > 30:
-                self._closed = True
-                return PairSignal(
-                    signal_type=SignalType.CLOSE_PAIR,
-                    long_symbol=self.symbol_a,
-                    short_symbol=self.symbol_b,
-                )
+        if self._opened and not self._closed and len(pit_data.get_data()) > 30:
+            self._closed = True
+            return PairSignal(
+                signal_type=SignalType.CLOSE_PAIR,
+                long_symbol=self.symbol_a,
+                short_symbol=self.symbol_b,
+            )
 
         return None
 
@@ -84,7 +83,9 @@ class SimpleWeightStrategy(BaseStrategy):
 class TestBacktestRunner:
     """Integration tests for BacktestRunner."""
 
-    def test_do_nothing_strategy(self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig):
+    def test_do_nothing_strategy(
+        self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig
+    ):
         strategy = DoNothingStrategy()
         runner = BacktestRunner(strategy, backtest_config)
         result = runner.run(pit_data)
@@ -94,7 +95,9 @@ class TestBacktestRunner:
         assert result.portfolio.equity == backtest_config.initial_capital
         assert len(result.portfolio.equity_curve) > 0
 
-    def test_simple_pair_strategy(self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig):
+    def test_simple_pair_strategy(
+        self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig
+    ):
         strategy = SimplePairStrategy("AAPL", "MSFT")
         runner = BacktestRunner(strategy, backtest_config)
         result = runner.run(pit_data)
@@ -113,7 +116,9 @@ class TestBacktestRunner:
         assert "do_nothing" in summary
         assert "Total Return" in summary
 
-    def test_equity_curve_dataframe(self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig):
+    def test_equity_curve_dataframe(
+        self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig
+    ):
         strategy = DoNothingStrategy()
         runner = BacktestRunner(strategy, backtest_config)
         result = runner.run(pit_data)
@@ -123,7 +128,9 @@ class TestBacktestRunner:
         assert "equity" in ec.columns
         assert len(ec) > 0
 
-    def test_trades_dataframe(self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig):
+    def test_trades_dataframe(
+        self, pit_data: PointInTimeDataFrame, backtest_config: BacktestConfig
+    ):
         strategy = SimplePairStrategy("AAPL", "MSFT")
         runner = BacktestRunner(strategy, backtest_config)
         result = runner.run(pit_data)

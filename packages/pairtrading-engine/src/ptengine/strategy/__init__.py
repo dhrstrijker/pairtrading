@@ -1,6 +1,6 @@
 """Strategy framework module."""
 
-from ptengine.strategy.base import Strategy, BaseStrategy
+from ptengine.strategy.base import BaseStrategy, Strategy
 
 __all__ = [
     "Strategy",

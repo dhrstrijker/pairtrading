@@ -4,13 +4,13 @@ The Portfolio class tracks all positions, cash, and P&L throughout a backtest.
 It supports both individual positions and linked pair positions.
 """
 
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Iterator
 
-from ptengine.core.types import Position, PairPosition, Trade, Side
-from ptengine.core.exceptions import InsufficientCapitalError
 from ptengine.core.constants import DEFAULT_INITIAL_CAPITAL
+from ptengine.core.exceptions import InsufficientCapitalError
+from ptengine.core.types import PairPosition, Position, Side, Trade
 
 
 @dataclass
