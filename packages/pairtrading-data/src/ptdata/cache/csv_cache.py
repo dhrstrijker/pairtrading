@@ -9,6 +9,7 @@ delete the cache and re-download everything for that symbol.
 Future V2: Could implement delta downloads (download only missing ranges).
 """
 
+import re
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -159,6 +160,27 @@ class CSVCache:
         cache_file = self._get_cache_path(symbol)
         return cache_file.exists()
 
+    # Valid ticker symbol pattern: letters, digits, dots, hyphens (e.g., BRK.A, BRK-B)
+    _VALID_SYMBOL_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9.\-]{0,9}$")
+
+    def _validate_symbol(self, symbol: str) -> None:
+        """Validate that a symbol is safe to use in file paths.
+
+        Prevents path traversal attacks by ensuring symbols only contain
+        valid ticker characters.
+
+        Args:
+            symbol: Ticker symbol to validate
+
+        Raises:
+            ValueError: If symbol contains invalid characters
+        """
+        if not self._VALID_SYMBOL_PATTERN.match(symbol):
+            raise ValueError(
+                f"Invalid symbol '{symbol}': must be 1-10 characters, "
+                "containing only letters, digits, dots, or hyphens"
+            )
+
     def _get_cache_path(self, symbol: str) -> Path:
         """Get the cache file path for a symbol.
 
@@ -167,8 +189,22 @@ class CSVCache:
 
         Returns:
             Path to the cache CSV file
+
+        Raises:
+            ValueError: If symbol contains invalid characters
         """
-        return self.cache_dir / f"{symbol}.csv"
+        self._validate_symbol(symbol)
+        cache_path = self.cache_dir / f"{symbol}.csv"
+
+        # Additional safety check: ensure path stays within cache directory
+        try:
+            cache_path.resolve().relative_to(self.cache_dir.resolve())
+        except ValueError as err:
+            raise ValueError(
+                f"Invalid symbol '{symbol}': path traversal detected"
+            ) from err
+
+        return cache_path
 
     def _load_from_cache(
         self,
