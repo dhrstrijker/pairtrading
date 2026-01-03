@@ -63,7 +63,8 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest packages/ --cov=packages --cov-report=xml --cov-report=html
+          pytest packages/pairtrading-data/tests --cov=packages/pairtrading-data/src --cov-report=xml --cov-report=html --cov-append
+          pytest packages/pairtrading-engine/tests --cov=packages/pairtrading-engine/src --cov-report=xml --cov-report=html --cov-append
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
