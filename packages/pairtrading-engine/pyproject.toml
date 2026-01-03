@@ -33,6 +33,14 @@ strategies = [
     "scipy>=1.11",
     "statsmodels>=0.14",
 ]
+analysis = [
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "scipy>=1.11",
+]
+all = [
+    "pairtrading-engine[strategies,analysis]",
+]
 
 [build-system]
 requires = ["hatchling"]

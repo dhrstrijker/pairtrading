@@ -75,6 +75,14 @@ from ptengine.commission.models import (
 # Built-in strategies
 from ptengine.strategies.ggr_distance import GGRDistanceStrategy
 
+# Analysis (optional - requires matplotlib)
+try:
+    from ptengine.analysis import StrategyAnalyzer
+    _HAS_ANALYSIS = True
+except ImportError:
+    _HAS_ANALYSIS = False
+    StrategyAnalyzer = None  # type: ignore
+
 __version__ = "0.1.0"
 
 __all__ = [
@@ -125,4 +133,6 @@ __all__ = [
     "IBKRTieredCommission",
     # Strategies
     "GGRDistanceStrategy",
+    # Analysis (optional)
+    "StrategyAnalyzer",
 ]
