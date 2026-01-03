@@ -3,7 +3,7 @@
 This provider fetches market data from the Massive API.
 Requires an API key set as MASSIVE_API_KEY environment variable.
 
-API Documentation: https://docs.polygon.io/ (legacy)
+API Documentation: https://docs.massive.com/
 """
 
 import os
@@ -48,8 +48,8 @@ class MassiveAPIProvider:
         )
     """
 
-    # Polygon.io API base URL (Massive API should have similar structure)
-    BASE_URL = "https://api.polygon.io"
+    # Massive API base URL
+    BASE_URL = "https://api.massive.com"
 
     def __init__(
         self,
