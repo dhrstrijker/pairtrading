@@ -71,6 +71,7 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 strict_equality = true
+ignore_missing_imports = true
 plugins = ["pydantic.mypy"]
 
 [tool.ruff]

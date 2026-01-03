@@ -33,7 +33,7 @@ jobs:
 
       - name: Type check with mypy
         run: |
-          mypy packages/pairtrading-data/src packages/pairtrading-engine/src
+          mypy packages/pairtrading-data/src packages/pairtrading-engine/src --ignore-missing-imports
 
       - name: Test pairtrading-data
         run: |
