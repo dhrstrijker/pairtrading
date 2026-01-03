@@ -4,12 +4,11 @@ This module provides tools to identify and handle gaps in market data.
 Proper handling of missing data is crucial for accurate backtesting.
 """
 
-from datetime import date, timedelta
 from enum import Enum, auto
 from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from ptdata.core.constants import DEFAULT_MAX_CONSECUTIVE_MISSING
 from ptdata.core.exceptions import DataQualityError
@@ -48,7 +47,8 @@ def find_gaps(
         - gap_trading_days: Estimated trading days missed
     """
     if df.empty:
-        return pd.DataFrame(columns=["symbol", "gap_start", "gap_end", "gap_days", "gap_trading_days"])
+        cols = ["symbol", "gap_start", "gap_end", "gap_days", "gap_trading_days"]
+        return pd.DataFrame(columns=cols)
 
     gaps: list[dict[str, Any]] = []
 
@@ -84,7 +84,7 @@ def _find_gaps_in_series(dates: pd.Series) -> list[dict[str, Any]]:
     Returns:
         List of gap dictionaries
     """
-    gaps = []
+    gaps: list[dict[str, Any]] = []
 
     if len(dates) < 2:
         return gaps
@@ -104,9 +104,11 @@ def _find_gaps_in_series(dates: pd.Series) -> list[dict[str, Any]]:
             # Estimate trading days missed (roughly 5 trading days per 7 calendar days)
             trading_days_missed = int(delta * 5 / 7) - 1
 
+            gap_start = prev_date.date() if hasattr(prev_date, "date") else prev_date
+            gap_end = curr_date.date() if hasattr(curr_date, "date") else curr_date
             gaps.append({
-                "gap_start": prev_date.date() if hasattr(prev_date, "date") else prev_date,
-                "gap_end": curr_date.date() if hasattr(curr_date, "date") else curr_date,
+                "gap_start": gap_start,
+                "gap_end": gap_end,
                 "gap_days": delta,
                 "gap_trading_days": max(0, trading_days_missed),
             })
@@ -254,7 +256,6 @@ def align_dates(
 
     elif how == "outer":
         # Include all dates from both
-        all_dates = set(df1[date_column]) | set(df2[date_column])
         # This would require creating placeholder rows - more complex
         # For now, just return as is
         pass

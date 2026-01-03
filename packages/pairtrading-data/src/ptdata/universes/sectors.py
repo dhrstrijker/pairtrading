@@ -7,7 +7,6 @@ likely to be correlated.
 
 from datetime import date
 
-
 # Shipping stocks (dry bulk, container, tanker)
 SHIPPING_STOCKS: list[str] = [
     # Dry bulk carriers

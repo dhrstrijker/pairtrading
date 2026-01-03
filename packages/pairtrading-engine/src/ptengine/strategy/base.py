@@ -144,11 +144,11 @@ class BaseStrategy(ABC):
         """Record trade when filled (default: append to trade list)."""
         self._trades.append(trade)
 
-    def on_start(self, start_date: date, end_date: date) -> None:
+    def on_start(self, start_date: date, end_date: date) -> None:  # noqa: B027
         """Called before backtest starts (default: no-op)."""
         pass
 
-    def on_end(self) -> None:
+    def on_end(self) -> None:  # noqa: B027
         """Called after backtest ends (default: no-op)."""
         pass
 

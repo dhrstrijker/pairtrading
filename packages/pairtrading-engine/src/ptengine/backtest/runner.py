@@ -9,20 +9,20 @@ Orchestrates the backtest loop:
 6. Record equity
 """
 
-from datetime import date, timedelta
-import pandas as pd
+from datetime import date
 
+import pandas as pd
 from ptdata.validation import PointInTimeDataFrame
 
 from ptengine.backtest.config import BacktestConfig
-from ptengine.core.types import PairSignal, WeightSignal, Trade
 from ptengine.core.exceptions import BacktestError, StrategyError
-from ptengine.strategy.base import Strategy
-from ptengine.portfolio.portfolio import Portfolio
+from ptengine.core.types import PairSignal, Trade, WeightSignal
 from ptengine.execution.simple import ClosePriceExecution
+from ptengine.portfolio.portfolio import Portfolio
+from ptengine.results.metrics import calculate_metrics
 from ptengine.results.report import BacktestResult
 from ptengine.results.trades import TradeLog
-from ptengine.results.metrics import calculate_metrics
+from ptengine.strategy.base import Strategy
 
 
 class BacktestRunner:
@@ -199,7 +199,6 @@ class BacktestRunner:
             Dict mapping symbol to price
         """
         data = pit_data.get_data()
-        date_col = pit_data._date_column
         price_col = self.config.price_column
 
         # Get most recent price for each symbol

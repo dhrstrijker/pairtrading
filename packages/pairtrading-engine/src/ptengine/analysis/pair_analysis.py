@@ -5,7 +5,6 @@ trading pairs, enabling attribution of returns to specific pairs.
 """
 
 from dataclasses import dataclass
-from datetime import date
 from statistics import mean
 
 import pandas as pd

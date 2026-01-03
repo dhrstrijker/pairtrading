@@ -71,11 +71,14 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 strict_equality = true
+ignore_missing_imports = true
 plugins = ["pydantic.mypy"]
 
 [tool.ruff]
 target-version = "py311"
 line-length = 88
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -85,7 +88,7 @@ select = [
     "UP",  # pyupgrade
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["ptdata"]
 
 [tool.coverage.run]

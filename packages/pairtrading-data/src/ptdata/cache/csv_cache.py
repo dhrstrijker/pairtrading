@@ -126,7 +126,9 @@ class CSVCache:
 
         # Fetch missing symbols from provider
         if symbols_to_fetch:
-            fetched = self._fetch_and_cache(symbols_to_fetch, start_date, end_date, adjusted)
+            fetched = self._fetch_and_cache(
+                symbols_to_fetch, start_date, end_date, adjusted
+            )
             if not fetched.empty:
                 all_data.append(fetched)
 

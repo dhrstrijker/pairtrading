@@ -1,16 +1,16 @@
 """Tests for core types."""
 
 from datetime import date
+
 import pytest
 
 from ptengine.core.types import (
+    PairSignal,
+    Position,
     Side,
     SignalType,
-    PairSignal,
-    WeightSignal,
-    Position,
-    PairPosition,
     Trade,
+    WeightSignal,
 )
 
 

@@ -1,7 +1,7 @@
 """Portfolio management module."""
 
+from ptengine.core.types import PairPosition, Position
 from ptengine.portfolio.portfolio import Portfolio
-from ptengine.core.types import Position, PairPosition
 
 __all__ = [
     "Portfolio",

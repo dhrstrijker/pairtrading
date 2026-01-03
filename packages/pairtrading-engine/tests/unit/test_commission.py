@@ -1,12 +1,11 @@
 """Tests for commission models."""
 
-import pytest
 
 from ptengine.commission.models import (
-    ZeroCommission,
-    PerShareCommission,
-    PercentageCommission,
     IBKRTieredCommission,
+    PercentageCommission,
+    PerShareCommission,
+    ZeroCommission,
 )
 
 

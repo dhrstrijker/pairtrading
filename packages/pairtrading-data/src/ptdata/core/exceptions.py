@@ -34,7 +34,8 @@ class LookAheadBiasError(PTDataError):
     def __init__(self, message: str, access_date: date, data_date: date) -> None:
         self.access_date = access_date
         self.data_date = data_date
-        super().__init__(f"{message}: attempted to access {data_date} data from {access_date}")
+        msg = f"{message}: attempted to access {data_date} data from {access_date}"
+        super().__init__(msg)
 
 
 class SurvivorshipBiasError(PTDataError):
@@ -50,7 +51,12 @@ class SurvivorshipBiasError(PTDataError):
         details: Additional context about the bias
     """
 
-    def __init__(self, message: str, symbol: str | None = None, details: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        symbol: str | None = None,
+        details: dict[str, Any] | None = None,
+    ) -> None:
         self.symbol = symbol
         self.details = details or {}
         super().__init__(f"{message}" + (f" (symbol: {symbol})" if symbol else ""))

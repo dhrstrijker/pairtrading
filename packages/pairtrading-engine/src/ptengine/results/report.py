@@ -7,8 +7,8 @@ import pandas as pd
 
 from ptengine.backtest.config import BacktestConfig
 from ptengine.portfolio.portfolio import Portfolio
-from ptengine.results.trades import TradeLog
 from ptengine.results.metrics import PerformanceMetrics
+from ptengine.results.trades import TradeLog
 
 
 @dataclass

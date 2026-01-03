@@ -8,8 +8,9 @@ calculations.
 from dataclasses import dataclass
 from datetime import date
 from statistics import mean
+from typing import Any
 
-from ptengine.core.types import Trade, Side
+from ptengine.core.types import Side, Trade
 from ptengine.results.trades import TradeLog
 
 
@@ -138,10 +139,7 @@ def match_round_trips(
         trades = sorted(trades, key=lambda t: t.date)
 
         # Track position state for each symbol in the pair
-        positions: dict[str, dict] = {}  # symbol -> {shares, avg_price, side}
-
-        # Track entry info for building round-trips
-        entry_info: dict | None = None
+        positions: dict[str, dict[str, Any]] = {}  # symbol -> {shares, avg_price, side}
 
         for trade in trades:
             symbol = trade.symbol
@@ -233,8 +231,12 @@ def match_round_trips(
             )
 
             # Reconstruct shares from trades
-            long_entry_trades = [t for t in trades if t.symbol == long_sym and t.side == Side.LONG]
-            short_entry_trades = [t for t in trades if t.symbol == short_sym and t.side == Side.SHORT]
+            long_entry_trades = [
+                t for t in trades if t.symbol == long_sym and t.side == Side.LONG
+            ]
+            short_entry_trades = [
+                t for t in trades if t.symbol == short_sym and t.side == Side.SHORT
+            ]
 
             if long_entry_trades and short_entry_trades:
                 long_shares = sum(t.shares for t in long_entry_trades)
@@ -260,10 +262,7 @@ def match_round_trips(
             return_pct = total_pnl / entry_notional if entry_notional > 0 else 0.0
 
             # Holding days
-            if exit_date:
-                holding_days = (exit_date - entry_date).days
-            else:
-                holding_days = 0
+            holding_days = (exit_date - entry_date).days if exit_date else 0
 
             round_trips.append(RoundTrip(
                 pair_id=pair_id,

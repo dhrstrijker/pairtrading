@@ -6,7 +6,6 @@ data that would have been available at the reference date.
 """
 
 from datetime import date
-from typing import Any
 
 import pandas as pd
 

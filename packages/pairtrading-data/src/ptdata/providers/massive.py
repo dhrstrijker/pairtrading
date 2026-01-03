@@ -8,7 +8,7 @@ API Documentation: https://docs.polygon.io/ (legacy)
 
 import os
 import time
-from datetime import date, timedelta
+from datetime import date
 from typing import Any
 
 import httpx
@@ -186,7 +186,8 @@ class MassiveAPIProvider:
                 response = self._client.get(url, params=params)
 
                 if response.status_code == 200:
-                    return response.json()
+                    result: dict[str, Any] = response.json()
+                    return result
 
                 if response.status_code == 429:
                     # Rate limited - wait and retry
@@ -205,9 +206,12 @@ class MassiveAPIProvider:
                     delay = self.retry_delay * (2**attempt)
                     time.sleep(delay)
 
-        raise PTDataError(f"API request failed after {self.retry_count} retries: {last_error}")
+        msg = f"API request failed after {self.retry_count} retries: {last_error}"
+        raise PTDataError(msg)
 
-    def _parse_response(self, symbol: str, results: list[dict[str, Any]]) -> pd.DataFrame:
+    def _parse_response(
+        self, symbol: str, results: list[dict[str, Any]]
+    ) -> pd.DataFrame:
         """Parse API response into DataFrame.
 
         Args:
