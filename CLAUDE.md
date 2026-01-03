@@ -118,3 +118,16 @@ analyzer.create_tear_sheet(Path("./tearsheet.png"))
 ## Environment Variables
 
 - `MASSIVE_API_KEY` - Polygon.io API key for market data (can be set in `.env` file at repo root)
+
+## Git Workflow
+
+### Pull Request Guidelines
+- **Never merge PRs without user verification** - Always wait for the user to confirm CI tests have passed before merging
+- Run CI checks locally before pushing to catch issues early:
+  ```bash
+  ruff check packages/
+  mypy packages/pairtrading-data/src packages/pairtrading-engine/src --ignore-missing-imports
+  pytest packages/pairtrading-data/tests -q
+  pytest packages/pairtrading-engine/tests -q
+  ```
+- Create feature branches for changes, not direct commits to main
