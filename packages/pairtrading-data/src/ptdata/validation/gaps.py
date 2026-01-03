@@ -84,7 +84,7 @@ def _find_gaps_in_series(dates: pd.Series) -> list[dict[str, Any]]:
     Returns:
         List of gap dictionaries
     """
-    gaps = []
+    gaps: list[dict[str, Any]] = []
 
     if len(dates) < 2:
         return gaps

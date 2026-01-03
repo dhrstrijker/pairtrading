@@ -170,7 +170,7 @@ class GGRDistanceStrategy(BaseStrategy):
         """Count unique trading days in data."""
         if "date" not in data.columns:
             return 0
-        return data["date"].nunique()
+        return int(data["date"].nunique())
 
     def _run_formation(self, data: pd.DataFrame, current_date: date) -> None:
         """Run pair formation to identify best pairs.

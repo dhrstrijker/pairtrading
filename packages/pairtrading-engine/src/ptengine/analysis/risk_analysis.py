@@ -132,32 +132,44 @@ def analyze_drawdowns(equity_curve: pd.DataFrame) -> list[DrawdownPeriod]:
                 trough_value = equity.iloc[i]
 
             if dd >= 0:
-                # Recovered
+                # Recovered - these are guaranteed to be set when in_drawdown is True
+                assert trough_value is not None and peak_value is not None
+                assert start_idx is not None and trough_idx is not None
                 trough_dd = (trough_value - peak_value) / peak_value
+                start_d = start_idx if isinstance(start_idx, date) else start_idx.date()
+                trough_d = trough_idx if isinstance(trough_idx, date) else trough_idx.date()
+                rec_d = idx if isinstance(idx, date) else idx.date()
+                dur = (idx - start_idx).days if hasattr(idx - start_idx, "days") else 0
+                rec = (idx - trough_idx).days if hasattr(idx - trough_idx, "days") else 0
                 periods.append(DrawdownPeriod(
-                    start_date=start_idx if isinstance(start_idx, date) else start_idx.date(),
-                    trough_date=trough_idx if isinstance(trough_idx, date) else trough_idx.date(),
-                    recovery_date=idx if isinstance(idx, date) else idx.date(),
-                    peak_equity=peak_value,
-                    trough_equity=trough_value,
+                    start_date=start_d,
+                    trough_date=trough_d,
+                    recovery_date=rec_d,
+                    peak_equity=float(peak_value),
+                    trough_equity=float(trough_value),
                     drawdown_pct=trough_dd,
-                    duration_days=(idx - start_idx).days if hasattr(idx - start_idx, "days") else 0,  # noqa: E501
-                    recovery_days=(idx - trough_idx).days if hasattr(idx - trough_idx, "days") else 0,  # noqa: E501
+                    duration_days=dur,
+                    recovery_days=rec,
                 ))
                 in_drawdown = False
 
     # Handle ongoing drawdown at end
     if in_drawdown and start_idx is not None:
+        assert trough_value is not None and peak_value is not None
+        assert trough_idx is not None
         last_idx = drawdown.index[-1]
         trough_dd = (trough_value - peak_value) / peak_value
+        start_d = start_idx if isinstance(start_idx, date) else start_idx.date()
+        trough_d = trough_idx if isinstance(trough_idx, date) else trough_idx.date()
+        dur = (last_idx - start_idx).days if hasattr(last_idx - start_idx, "days") else 0
         periods.append(DrawdownPeriod(
-            start_date=start_idx if isinstance(start_idx, date) else start_idx.date(),
-            trough_date=trough_idx if isinstance(trough_idx, date) else trough_idx.date(),
+            start_date=start_d,
+            trough_date=trough_d,
             recovery_date=None,
-            peak_equity=peak_value,
-            trough_equity=trough_value,
+            peak_equity=float(peak_value),
+            trough_equity=float(trough_value),
             drawdown_pct=trough_dd,
-            duration_days=(last_idx - start_idx).days if hasattr(last_idx - start_idx, "days") else 0,  # noqa: E501
+            duration_days=dur,
             recovery_days=None,
         ))
 
@@ -257,7 +269,7 @@ def calculate_risk_profile(
     if drawdown_periods:
         max_dd = min(dp.drawdown_pct for dp in drawdown_periods)
         max_dd_duration = max(dp.duration_days for dp in drawdown_periods)
-        avg_dd = np.mean([dp.drawdown_pct for dp in drawdown_periods])
+        avg_dd = float(np.mean([dp.drawdown_pct for dp in drawdown_periods]))
     else:
         max_dd = 0.0
         max_dd_duration = 0

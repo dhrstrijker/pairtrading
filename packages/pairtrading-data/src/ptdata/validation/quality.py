@@ -257,7 +257,8 @@ def validate_dataframe(
             issues.append(issue)
 
             if raise_on_error:
-                raise DataQualityError(issue["message"], check_name="missing_columns")
+                msg = str(issue["message"])
+                raise DataQualityError(msg, check_name="missing_columns")
 
     # Run price sanity checks
     issues.extend(check_price_sanity(df, raise_on_error=raise_on_error))

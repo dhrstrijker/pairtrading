@@ -20,7 +20,7 @@ try:
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
-    Figure = None
+    Figure = None  # type: ignore[misc, assignment]
 
 try:
     import seaborn as sns
@@ -126,7 +126,9 @@ def create_equity_chart(
     ax1.grid(True, alpha=0.3)
 
     # Format y-axis as currency
-    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f"${x:,.0f}"))
+    ax1.yaxis.set_major_formatter(
+        plt.FuncFormatter(lambda x, p: f"${x:,.0f}")  # type: ignore[attr-defined]
+    )
 
     # Bottom panel: Underwater curve
     running_max = equity.expanding().max()
@@ -141,8 +143,8 @@ def create_equity_chart(
     ax2.grid(True, alpha=0.3)
 
     # Format x-axis dates
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-    ax2.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+    ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))  # type: ignore[no-untyped-call]
+    ax2.xaxis.set_major_locator(mdates.MonthLocator(interval=3))  # type: ignore[no-untyped-call]
     plt.xticks(rotation=45)
 
     plt.tight_layout()
@@ -178,7 +180,7 @@ def create_pair_returns_chart(
 
     # Get unique pairs and assign colors
     pairs = pair_returns["pair_id"].unique()
-    colors = plt.cm.tab10(np.linspace(0, 1, len(pairs)))
+    colors = plt.cm.tab10(np.linspace(0, 1, len(pairs)))  # type: ignore[attr-defined]
 
     for pair_id, color in zip(pairs, colors, strict=True):
         pair_data = pair_returns[pair_returns["pair_id"] == pair_id]
@@ -194,8 +196,8 @@ def create_pair_returns_chart(
     ax.legend(loc="upper left", fontsize=9)
     ax.grid(True, alpha=0.3)
 
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))  # type: ignore[no-untyped-call]
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))  # type: ignore[no-untyped-call]
     plt.xticks(rotation=45)
 
     plt.tight_layout()
@@ -382,8 +384,8 @@ def create_rolling_metrics_chart(
     ax4.grid(True, alpha=0.3)
 
     for ax in axes[1, :]:
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))  # type: ignore[no-untyped-call]
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))  # type: ignore[no-untyped-call]
 
     plt.xticks(rotation=45)
     plt.tight_layout()
@@ -549,14 +551,16 @@ def create_tear_sheet(
 
     ax1.set_ylabel("Equity ($)")
     ax1.set_title("Equity Curve", fontsize=12)
-    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f"${x:,.0f}"))
+    ax1.yaxis.set_major_formatter(
+        plt.FuncFormatter(lambda x, p: f"${x:,.0f}")  # type: ignore[attr-defined]
+    )
     ax1.grid(True, alpha=0.3)
 
     # 2. Pair returns
     ax2 = fig.add_subplot(gs[1, 0])
     if not pair_returns.empty:
         pairs = pair_returns["pair_id"].unique()
-        colors = plt.cm.tab10(np.linspace(0, 1, len(pairs)))
+        colors = plt.cm.tab10(np.linspace(0, 1, len(pairs)))  # type: ignore[attr-defined]
         for pair_id, color in zip(pairs, colors, strict=True):
             pdata = pair_returns[pair_returns["pair_id"] == pair_id]
             ax2.plot(pd.to_datetime(pdata["date"]), pdata["cumulative_return"] * 100,

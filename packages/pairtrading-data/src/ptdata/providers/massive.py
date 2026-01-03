@@ -186,7 +186,8 @@ class MassiveAPIProvider:
                 response = self._client.get(url, params=params)
 
                 if response.status_code == 200:
-                    return response.json()
+                    result: dict[str, Any] = response.json()
+                    return result
 
                 if response.status_code == 429:
                     # Rate limited - wait and retry

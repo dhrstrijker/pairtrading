@@ -8,6 +8,7 @@ calculations.
 from dataclasses import dataclass
 from datetime import date
 from statistics import mean
+from typing import Any
 
 from ptengine.core.types import Side, Trade
 from ptengine.results.trades import TradeLog
@@ -138,7 +139,7 @@ def match_round_trips(
         trades = sorted(trades, key=lambda t: t.date)
 
         # Track position state for each symbol in the pair
-        positions: dict[str, dict] = {}  # symbol -> {shares, avg_price, side}
+        positions: dict[str, dict[str, Any]] = {}  # symbol -> {shares, avg_price, side}
 
         for trade in trades:
             symbol = trade.symbol

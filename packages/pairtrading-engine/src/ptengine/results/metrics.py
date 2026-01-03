@@ -9,6 +9,7 @@ Provides standard performance metrics for backtest evaluation:
 
 from dataclasses import dataclass
 from datetime import date
+from typing import Any
 
 import numpy as np
 
@@ -142,7 +143,7 @@ def calculate_metrics(
 
 
 def _calculate_drawdown(
-    equity_values: np.ndarray, dates: list[date]
+    equity_values: "np.ndarray[Any, np.dtype[np.floating[Any]]]", dates: list[date]
 ) -> tuple[float, int]:
     """Calculate maximum drawdown and duration.
 
